@@ -26,6 +26,11 @@ public class PlayerController : MonoBehaviour
  // UI object to display winning text.
  public GameObject winTextObject;
 
+//for jumping
+ private bool _jump;
+ public float jumpForce = 0;
+ private int jumpCount = 0;
+
  // Start is called before the first frame update.
  void Start()
     {
@@ -61,8 +66,26 @@ public class PlayerController : MonoBehaviour
 
  // Apply force to the Rigidbody to move the player.
         rb.AddForce(movement * speed); 
+        
+        if (_jump)
+        {
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            _jump = false;
+        }
     }
 
+//from provided PlayerController.cs on canvas
+void Update() {
+        if (Keyboard.current.spaceKey.wasPressedThisFrame  && jumpCount < 2) {
+                _jump = true;
+                jumpCount++;
+         }
+    }
+
+void OnCollisionEnter(Collision collision)
+    {
+        jumpCount = 0;
+    }
  
  void OnTriggerEnter(Collider other) 
     {
